@@ -191,16 +191,48 @@ export default function ChatPage() {
     
     let formatted = text;
     
-    // 의료 정보 포맷팅
-    formatted = formatted.replace(/(\*\*Patient Summary\*\*)/g, '$1\n');
-    formatted = formatted.replace(/(\*\*Suggestions for the doctor:\*\*)/g, '\n$1\n');
-    formatted = formatted.replace(/(\*\*(?:Name|User ID|Date of Birth|Gender|Medical History|Medications|Visits|Conversation Insights):\*\*)/g, '\n$1 ');
-    formatted = formatted.replace(/\s*---\s*/g, '\n\n---\n');
-    formatted = formatted.replace(/\s+-\s+([^-\n]+)/g, '\n• $1');
-    formatted = formatted.replace(/[ \t]+/g, ' ');
-    formatted = formatted.replace(/^\n+/, '');
-    formatted = formatted.replace(/\n{3,}/g, '\n\n');
-    formatted = formatted.replace(/\n+$/, '');
+    // 마크다운 헤더 형식을 HTML로 변환 (### 텍스트)
+    formatted = formatted.replace(/^### (.+)$/gm, '<h3 style="font-size: 16px; font-weight: 600; color: #374151; margin: 15px 0 8px 0;">$1</h3>');
+    
+    // 마크다운 볼드 형식을 HTML로 변환
+    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // 의료 정보 헤더 포맷팅 (색상 적용)
+    formatted = formatted.replace(/(<strong>Patient Summary<\/strong>)/g, '<div style="color: #2563eb; font-size: 18px; margin-bottom: 10px;">$1</div>');
+    formatted = formatted.replace(/(<strong>Medical History<\/strong>)/g, '<div style="color: #dc2626; font-size: 16px; margin: 15px 0 8px 0;">$1</div>');
+    formatted = formatted.replace(/(<strong>Medications<\/strong>)/g, '<div style="color: #059669; font-size: 16px; margin: 15px 0 8px 0;">$1</div>');
+    formatted = formatted.replace(/(<strong>Recent Visit<\/strong>)/g, '<div style="color: #7c2d12; font-size: 16px; margin: 15px 0 8px 0;">$1</div>');
+    formatted = formatted.replace(/(<strong>Conversation Insights<\/strong>)/g, '<div style="color: #7c3aed; font-size: 16px; margin: 15px 0 8px 0;">$1</div>');
+    
+    // h3 태그에 특별한 색상 적용
+    formatted = formatted.replace(/<h3([^>]*)>Medical History<\/h3>/g, '<h3$1 style="color: #dc2626; font-size: 16px; font-weight: 600; margin: 15px 0 8px 0;">Medical History</h3>');
+    
+    // 환자 기본 정보 필드들
+    formatted = formatted.replace(/(<strong>(?:Name|User ID|Date of Birth|Gender):<\/strong>)/g, '<span style="color: #1f2937; font-weight: 600;">$1</span>');
+    
+    // 구분선 스타일링
+    formatted = formatted.replace(/\s*---\s*/g, '<div style="border-top: 2px solid #e5e7eb; margin: 20px 0; padding-top: 15px;"></div>');
+    
+    // 불렛 포인트 스타일링
+    formatted = formatted.replace(/\s*•\s+([^•\n]+)/g, '<div style="margin: 8px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #3b82f6;">•</span>$1</div>');
+    
+    // 숫자 리스트 스타일링 (약물 목록 등)
+    formatted = formatted.replace(/(\d+)\.\s+(<strong>.*?<\/strong>)/g, '<div style="margin: 12px 0; font-weight: 600; color: #374151;"><span style="color: #3b82f6; margin-right: 8px;">$1.</span>$2</div>');
+    
+    // 날짜 및 시간 강조
+    formatted = formatted.replace(/(\d{4}-\d{2}-\d{2})/g, '<span style="background: #dbeafe; padding: 2px 6px; border-radius: 4px; font-weight: 500;">$1</span>');
+    
+    // 의사 이름 강조
+    formatted = formatted.replace(/(Dr\.\s+[A-Za-z\s]+)/g, '<span style="color: #059669; font-weight: 600;">$1</span>');
+    
+    // 공백 및 줄바꿈 정리 (HTML 변환 전에 처리)
+    formatted = formatted.replace(/[ \t]+/g, ' '); // 연속 공백을 하나로
+    formatted = formatted.replace(/^\n+/, ''); // 시작 부분 줄바꿈 제거
+    formatted = formatted.replace(/\n+$/, ''); // 끝 부분 줄바꿈 제거
+    formatted = formatted.replace(/\n{3,}/g, '\n\n'); // 3개 이상 줄바꿈을 2개로 제한
+    
+    // 줄바꿈을 <br>로 변환
+    formatted = formatted.replace(/\n/g, '<br>');
     
     return formatted;
   };
@@ -416,7 +448,7 @@ export default function ChatPage() {
                 borderLeft: '4px solid #28a745'
               }}>
                 <div style={{ fontSize: '14px', fontWeight: '600', color: '#2c3e50' }}>
-                  17:30 - Consultation
+                  17:30 - Emily Johnson (Patient)
                 </div>
                 <div style={{ fontSize: '13px', color: '#6c757d', marginTop: '4px' }}>
                   Park, Ji-hoon (45) - Follow-up
@@ -619,7 +651,7 @@ export default function ChatPage() {
 
           {/* Chat Area */}
           <div style={{ 
-            height: '500px', 
+            height: '650px', 
             border: '1px solid rgba(0,0,0,0.1)', 
             borderRadius: '16px', 
             overflowY: 'auto', 
@@ -726,7 +758,15 @@ export default function ChatPage() {
                               Thinking...
                             </div>
                           ) : (
-                            formatBotResponse(chat.bot)
+                            <div 
+                              style={{
+                                lineHeight: '1.6',
+                                color: '#2c3e50'
+                              }}
+                              dangerouslySetInnerHTML={{ 
+                                __html: formatBotResponse(chat.bot) 
+                              }}
+                            />
                           )}
                         </div>
                       </div>

@@ -43,308 +43,443 @@ export default function HomePage() {
         animation: 'float 6s ease-in-out infinite'
       }} />
 
-      {/* 메인 컨텐츠 */}
+      {/* 메인 컨텐츠 - 2컬럼 레이아웃 */}
       <div style={{
         position: 'relative',
         zIndex: 1,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         minHeight: '100vh',
-        padding: '40px 20px'
+        gap: '40px',
+        padding: '40px'
       }}>
         
+        {/* 왼쪽 컬럼 - 로고 & 문제점 */}
         <div style={{
-          maxWidth: '900px',
-          width: '100%',
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '30px',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.2)',
-          overflow: 'hidden',
-          animation: 'slideUp 1s ease-out'
+          flex: '1',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '30px'
         }}>
           
-          {/* 헤더 섹션 */}
+          {/* 로고 섹션 */}
           <div style={{
-            background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
-            color: 'white',
-            padding: '60px 40px',
-            textAlign: 'center'
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '25px',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+            overflow: 'hidden'
           }}>
-            
-            {/* 로고와 타이틀 */}
             <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '25px',
-              marginBottom: '20px',
-              flexWrap: 'wrap'
+              background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+              color: 'white',
+              padding: '40px',
+              textAlign: 'center'
             }}>
-              <img 
-                src="/CarePilotLogo.png" 
-                alt="CarePilot Logo"
-                style={{
-                  width: '100px',
-                  height: '100px',
-                  borderRadius: '20px',
-                  boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
-                  animation: 'logoSpin 10s linear infinite'
-                }}
-              />
-              <div>
-                <h1 style={{
-                  margin: '0',
-                  fontSize: '48px',
-                  fontWeight: '700',
-                  letterSpacing: '-1px',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}>
-                  CarePilot
-                </h1>
-                <p style={{
-                  margin: '8px 0 0 0',
-                  fontSize: '20px',
-                  opacity: '0.9',
-                  fontWeight: '300'
-                }}>
-                  AI-Powered Healthcare Assistant
-                </p>
-              </div>
-            </div>
-
-            {/* 버전 및 상태 */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '15px',
-              padding: '12px 24px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '25px',
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
-              <span style={{
-                padding: '4px 12px',
-                background: '#28a745',
-                borderRadius: '12px',
-                fontSize: '12px'
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '20px',
+                marginBottom: '15px',
+                flexWrap: 'wrap'
               }}>
-                v1.0.0
-              </span>
-              <span>🩺 Healthcare Ready</span>
-              <span>🤖 AI Powered</span>
+                <img 
+                  src="/CarePilotLogo.png" 
+                  alt="CarePilot Logo"
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '16px',
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+                    animation: 'logoSpin 10s linear infinite'
+                  }}
+                />
+                <div>
+                  <h1 style={{
+                    margin: '0',
+                    fontSize: '36px',
+                    fontWeight: '700',
+                    letterSpacing: '-1px'
+                  }}>
+                    CarePilot
+                  </h1>
+                  <p style={{
+                    margin: '5px 0 0 0',
+                    fontSize: '16px',
+                    opacity: '0.9',
+                    fontWeight: '300'
+                  }}>
+                    AI-Powered Healthcare Assistant
+                  </p>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '8px 20px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: '500'
+              }}>
+                <span style={{
+                  padding: '3px 10px',
+                  background: '#28a745',
+                  borderRadius: '10px',
+                  fontSize: '11px'
+                }}>
+                  v1.0.0
+                </span>
+                <span>🩺 Healthcare Ready</span>
+                <span>🤖 AI Powered</span>
+              </div>
             </div>
           </div>
 
-          {/* 본문 섹션 */}
-          <div style={{ padding: '60px 40px' }}>
-            
-            {/* 프로젝트 소개 */}
-            <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+          {/* 문제점 섹션 */}
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '25px',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+            overflow: 'hidden',
+            flex: '1'
+          }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%)',
+              padding: '30px',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              border: '1px solid #feb2b2'
+            }}>
               <h2 style={{
                 margin: '0 0 20px 0',
-                fontSize: '32px',
-                color: '#2c3e50',
-                fontWeight: '600'
+                fontSize: '24px',
+                color: '#c53030',
+                fontWeight: '600',
+                textAlign: 'center'
               }}>
-                혁신적인 의료 AI 어시스턴트
+                Current Problem in Healthcare
               </h2>
-              <p style={{
+              
+              <h3 style={{
                 fontSize: '18px',
-                color: '#6c757d',
-                lineHeight: '1.6',
-                maxWidth: '600px',
-                margin: '0 auto'
+                color: '#2d3748',
+                marginBottom: '15px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
               }}>
-                CarePilot은 의료진과 환자를 위한 차세대 AI 헬스케어 솔루션입니다. 
-                인공지능 기술을 활용하여 의료 상담, 진단 보조, 환자 모니터링을 
-                통합적으로 지원합니다.
-              </p>
+                🩺 Doctors Face Daily Challenges:
+              </h3>
+              
+              <ul style={{
+                listStyle: 'none',
+                padding: 0,
+                fontSize: '15px',
+                lineHeight: '1.8',
+                color: '#4a5568',
+                flex: '1'
+              }}>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  📄 <div><strong>Heavy paperwork</strong> that consumes valuable time</div>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  📝 <div><strong>Manual data entry</strong> that slows down workflow</div>
+                </li>
+                <li style={{ marginBottom: '20px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  ✏️ <div><strong>Real-time note-taking</strong> during consultations that splits focus</div>
+                </li>
+              </ul>
+              
+              <div style={{
+                background: '#f7fafc',
+                padding: '15px 20px',
+                borderRadius: '12px',
+                borderLeft: '4px solid #e53e3e',
+                fontSize: '15px',
+                fontStyle: 'italic',
+                color: '#2d3748',
+                textAlign: 'center',
+                marginTop: 'auto'
+              }}>
+                "Doctors spend up to <strong>50% of their time</strong> on documentation."
+              </div>
             </div>
+          </div>
+        </div>
 
-            {/* 주요 기능 */}
+        {/* 오른쪽 컬럼 - 해결책 & 기능들 */}
+        <div style={{
+          flex: '1',
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '25px',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          
+          {/* 해결책 헤더 */}
+          <div style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            padding: '30px',
+            textAlign: 'center'
+          }}>
+            <h2 style={{
+              margin: '0 0 10px 0',
+              fontSize: '28px',
+              fontWeight: '600'
+            }}>
+              AI Voice-Enabled Doctor Assistant
+            </h2>
+            <p style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              margin: '0 0 10px 0',
+              opacity: '0.95'
+            }}>
+              CarePilot = More Time. Better Care. Scalable Impact.
+            </p>
+            <p style={{
+              fontSize: '14px',
+              margin: '0',
+              opacity: '0.9',
+              lineHeight: '1.5'
+            }}>
+              What if we could automate these tasks? What if doctors could spend more time on 
+              <strong> patient care</strong>, not <strong>paperwork</strong>?
+            </p>
+          </div>
+
+          {/* 기능 카드들 */}
+          <div style={{
+            padding: '30px',
+            flex: '1',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '30px',
-              marginBottom: '50px'
+              gridTemplateColumns: '1fr 1fr',
+              gap: '20px',
+              flex: '1'
             }}>
               
               <div style={{
                 background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
-                padding: '30px',
-                borderRadius: '20px',
+                padding: '20px',
+                borderRadius: '16px',
                 textAlign: 'center',
                 border: '1px solid #e1f5fe',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                transition: 'transform 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(33, 150, 243, 0.2)';
+                e.currentTarget.style.transform = 'translateY(-3px)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
               }}>
-                <div style={{ fontSize: '48px', marginBottom: '15px' }}>🤖</div>
+                <div style={{ fontSize: '36px', marginBottom: '10px' }}>📋</div>
                 <h3 style={{
-                  margin: '0 0 15px 0',
-                  fontSize: '20px',
+                  margin: '0 0 10px 0',
+                  fontSize: '16px',
                   color: '#1976d2',
                   fontWeight: '600'
                 }}>
-                  AI 진단 보조
+                  Instant Patient Summaries
                 </h3>
                 <p style={{
                   margin: '0',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   color: '#424242',
-                  lineHeight: '1.5'
+                  lineHeight: '1.4',
+                  flex: '1'
                 }}>
-                  고도화된 AI 모델을 통해 의료진의 진단과 치료 계획 수립을 지원합니다.
+                  Cuts through medical history clutter to deliver concise, actionable insights.
                 </p>
               </div>
 
               <div style={{
                 background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
-                padding: '30px',
-                borderRadius: '20px',
+                padding: '20px',
+                borderRadius: '16px',
                 textAlign: 'center',
                 border: '1px solid #e8f5e8',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                transition: 'transform 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(76, 175, 80, 0.2)';
+                e.currentTarget.style.transform = 'translateY(-3px)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
               }}>
-                <div style={{ fontSize: '48px', marginBottom: '15px' }}>💬</div>
+                <div style={{ fontSize: '36px', marginBottom: '10px' }}>🎤</div>
                 <h3 style={{
-                  margin: '0 0 15px 0',
-                  fontSize: '20px',
+                  margin: '0 0 10px 0',
+                  fontSize: '16px',
                   color: '#388e3c',
                   fontWeight: '600'
                 }}>
-                  실시간 상담
+                  Voice-to-Structured Notes
                 </h3>
                 <p style={{
                   margin: '0',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   color: '#424242',
-                  lineHeight: '1.5'
+                  lineHeight: '1.4',
+                  flex: '1'
                 }}>
-                  24시간 언제든지 의료 상담과 건강 관리 조언을 받을 수 있습니다.
+                  Turns conversations into clinical notes and AI-recommended next steps.
                 </p>
               </div>
 
               <div style={{
                 background: 'linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%)',
-                padding: '30px',
-                borderRadius: '20px',
+                padding: '20px',
+                borderRadius: '16px',
                 textAlign: 'center',
                 border: '1px solid #fff3e0',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+                transition: 'transform 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(255, 152, 0, 0.2)';
+                e.currentTarget.style.transform = 'translateY(-3px)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
               }}>
-                <div style={{ fontSize: '48px', marginBottom: '15px' }}>📊</div>
+                <div style={{ fontSize: '36px', marginBottom: '10px' }}>📅</div>
                 <h3 style={{
-                  margin: '0 0 15px 0',
-                  fontSize: '20px',
+                  margin: '0 0 10px 0',
+                  fontSize: '16px',
                   color: '#f57500',
                   fontWeight: '600'
                 }}>
-                  스마트 모니터링
+                  Schedule Integration
                 </h3>
                 <p style={{
                   margin: '0',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   color: '#424242',
-                  lineHeight: '1.5'
+                  lineHeight: '1.4',
+                  flex: '1'
                 }}>
-                  환자의 건강 상태를 지속적으로 모니터링하고 위험 요소를 조기 발견합니다.
+                  Seamlessly manages calendars, reducing workflow friction.
+                </p>
+              </div>
+
+              <div style={{
+                background: 'linear-gradient(135deg, #f3e8ff 0%, #d6bcfa 100%)',
+                padding: '20px',
+                borderRadius: '16px',
+                textAlign: 'center',
+                border: '1px solid #e9d5ff',
+                transition: 'transform 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+                <div style={{ fontSize: '36px', marginBottom: '10px' }}>🤖</div>
+                <h3 style={{
+                  margin: '0 0 10px 0',
+                  fontSize: '16px',
+                  color: '#7c3aed',
+                  fontWeight: '600'
+                }}>
+                  Voice-Driven Automation
+                </h3>
+                <p style={{
+                  margin: '0',
+                  fontSize: '12px',
+                  color: '#424242',
+                  lineHeight: '1.4',
+                  flex: '1'
+                }}>
+                  Handles routine tasks, saving time and boosting efficiency.
                 </p>
               </div>
             </div>
 
             {/* CTA 버튼 */}
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ 
+              textAlign: 'center', 
+              marginTop: '30px',
+              paddingTop: '20px',
+              borderTop: '1px solid #e2e8f0'
+            }}>
               <button
                 onClick={handleDemoClick}
                 style={{
-                  padding: '20px 60px',
-                  fontSize: '20px',
+                  padding: '16px 40px',
+                  fontSize: '18px',
                   fontWeight: '600',
                   color: 'white',
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   border: 'none',
-                  borderRadius: '25px',
+                  borderRadius: '20px',
                   cursor: 'pointer',
-                  transition: 'all 0.4s ease',
-                  boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
-                  position: 'relative',
-                  overflow: 'hidden'
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
+                  marginBottom: '10px'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
-                  e.currentTarget.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.6)';
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                  e.currentTarget.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
                 }}
               >
-                🚀 CarePilot 체험하기
+                🚀 Experience CarePilot Demo
               </button>
               
               <p style={{
-                margin: '20px 0 0 0',
-                fontSize: '14px',
+                margin: '0',
+                fontSize: '12px',
                 color: '#6c757d'
               }}>
-                * 클릭하여 AI 헬스케어 어시스턴트를 직접 체험해보세요
+                Click to experience the AI-powered healthcare assistant
               </p>
-            </div>
-          </div>
 
-          {/* 푸터 */}
-          <div style={{
-            background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-            padding: '30px 40px',
-            textAlign: 'center',
-            borderTop: '1px solid #dee2e6'
-          }}>
-            <p style={{
-              margin: '0',
-              fontSize: '14px',
-              color: '#6c757d'
-            }}>
-              © 2024 CarePilot Team. 혁신적인 헬스케어 솔루션을 제공합니다.
-            </p>
-            <div style={{
-              marginTop: '15px',
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '20px',
-              flexWrap: 'wrap'
-            }}>
-              <span style={{ fontSize: '12px', color: '#adb5bd' }}>🔒 HIPAA Compliant</span>
-              <span style={{ fontSize: '12px', color: '#adb5bd' }}>⚡ Real-time Processing</span>
-              <span style={{ fontSize: '12px', color: '#adb5bd' }}>🌍 Global Healthcare</span>
+              {/* 푸터 정보 */}
+              <div style={{
+                marginTop: '20px',
+                padding: '15px 0',
+                borderTop: '1px solid #e2e8f0',
+                fontSize: '11px',
+                color: '#6c757d'
+              }}>
+                <p style={{ margin: '0 0 8px 0' }}>
+                  © 2025 CarePilot Team. Transforming healthcare with AI.
+                </p>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '15px',
+                  flexWrap: 'wrap'
+                }}>
+                  <span>🔒 HIPAA Compliant</span>
+                  <span>⚡ Real-time</span>
+                  <span>🌍 Global</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
