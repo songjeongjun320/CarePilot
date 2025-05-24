@@ -3,6 +3,7 @@
 'use client'; // App Router를 사용하는 경우 클라이언트 컴포넌트로 명시
 
 import { useState, FormEvent, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 // 로그 타입 정의 (백그라운드 로깅용)
 interface LogEntry {
@@ -946,6 +947,42 @@ export default function ChatPage() {
               </div>
             </div>
           )}
+
+          {/* 환자 정보 페이지로 이동 버튼 */}
+          <div style={{ 
+            padding: '20px 30px 30px 30px',
+            borderTop: '1px solid rgba(0,0,0,0.1)'
+          }}>
+            <Link 
+              href="/patients"
+              style={{
+                display: 'block',
+                width: '100%',
+                padding: '16px 20px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #28a745 0%, #20853d 100%)',
+                color: 'white',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: '600',
+                textAlign: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(40, 167, 69, 0.3)',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(40, 167, 69, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(40, 167, 69, 0.3)';
+              }}
+            >
+              📋 View Patient Information
+            </Link>
+          </div>
         </div>
       </div>
 
