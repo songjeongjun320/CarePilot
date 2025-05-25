@@ -184,11 +184,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **CarePilot Team** - Transforming healthcare with innovative AI solutions
 
+### Core Team Members:
+
+- **Jun Song** - [LinkedIn](https://www.linkedin.com/in/junsong0602)
+- **Atchuta Vani Munnamgi** - [LinkedIn](https://www.linkedin.com/in/atchuta-vani-munnamgi/)
+- **Alvin Ishimwe** - [LinkedIn](https://www.linkedin.com/in/alvin-ishimwe/)
+- **Alba [LinkedIn]
+
 ## 🔗 Links
 
-- **Live Demo**: [CarePilot Demo](http://localhost:3000)
-- **Documentation**: [Project Docs](docs/)
-- **API Reference**: [API Docs](docs/api/)
+- **Live Demo**: [CarePilot Youtube Demo](https://www.youtube.com/watch?v=6-lDsj1gmZM)
+- **Documentation**: [Project Docs](https://docs.google.com/document/d/1EN2k-xsVjuNdmYFqnJBhVM_17AK1TxLRuR5yq9A1cl8/edit?tab=t.4s2y6ee8u1es)
+- **AgentHacksg 2025**: [Hackathon](https://devpost.com/software/carepilot-ebjmna?_gl=1*1vlqpni*_gcl_au*NDA1MDM4NjE2LjE3NDgxMTM4ODI.*_ga*MjExNzc0MDMxMS4xNzQ4MTEzODgy*_ga_0YHJK3Y10M*czE3NDgxMzA5MzkkbzUkZzEkdDE3NDgxMzMwODIkajAkbDAkaDA.)
 
 ## 🆘 Support
 
