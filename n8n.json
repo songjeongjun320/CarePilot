@@ -1,0 +1,673 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "content": "## CarePilot\n- Agent get the patient information from DB (Google sheet)\n- Basically patient information might have disease, history etc.\n- Doctor's surgery schedule reminding\n- And let's discuss how it can help the doctor",
+          "width": 500
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -700,
+          540
+        ],
+        "id": "17bdf0d6-b21e-472f-a0a2-6145022c0048",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "41fb0ed9-3ab6-4536-a150-d3f564b1c9eb",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -660,
+          1020
+        ],
+        "id": "be8b8452-fd1f-40b6-971f-eee8b5b34663",
+        "name": "Webhook1",
+        "webhookId": "41fb0ed9-3ab6-4536-a150-d3f564b1c9eb"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "tableId": "documents",
+          "returnAll": true
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          480,
+          460
+        ],
+        "id": "64919299-5f41-474c-bac3-413ce3a2fa9d",
+        "name": "documents",
+        "credentials": {
+          "supabaseApi": {
+            "id": "u5JCC41hkuqHakQf",
+            "name": "CarePilot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"reply\": \"{{ $json.cleanedReply }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.2,
+        "position": [
+          1180,
+          560
+        ],
+        "id": "ff655283-d9e0-40ef-99b8-8b3d18d1406f",
+        "name": "Respond to Webhook1",
+        "alwaysOutputData": true,
+        "executeOnce": true,
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=You need to summarize {{ $json.content }} and let the doctor know keynote of the patient at the end.\n\nAnd return the Result in a way that's easy to read?.",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          720,
+          560
+        ],
+        "id": "3630c2fa-4d43-4414-b478-e6e1725cfadc",
+        "name": "AI Agent - Summary Patient Info",
+        "alwaysOutputData": true,
+        "executeOnce": true,
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// 가정: 'documents' 데이터가 3개의 개별 아이템으로 Code 노드의 기본 입력으로 들어옴\n//       각 아이템은 { json: { id: ..., content: ..., metadata: ..., embedding: ... } } 형태\nconst documents = [];\nfor (const item of items) { // 'items'는 n8n에서 제공하는 현재 노드의 입력 아이템 배열입니다.\n  documents.push(item.json); // 각 아이템의 'json' 객체를 'documents' 배열에 추가\n}\n\n// AI Agent1 노드의 출력을 참조하여 찾을 이름을 가져옵니다.\n// 'AI Agent1' 노드가 이 Code 노드보다 먼저 실행되어야 합니다.\nconst targetNameItem = $('Agent - Load Patient').item; // AI Agent1의 전체 아이템 가져오기\nlet targetName = \"\";\n\nif (targetNameItem && targetNameItem.json && targetNameItem.json.output) {\n  targetName = targetNameItem.json.output.trim().toLowerCase();\n} else {\n  // AI Agent1의 출력을 찾을 수 없는 경우에 대한 처리 (오류 로깅 또는 기본값 설정 등)\n  console.error(\"Could not find target name from AI Agent1 output.\");\n  // 이 경우, 일치하는 사용자를 찾을 수 없으므로 아래 로직에서 'User not found'를 반환하게 됩니다.\n}\n\n\nlet foundContent = null;\nlet foundUser = null; // 찾은 사용자 정보 전체를 저장할 변수 (선택 사항)\n\nif (targetName) { // targetName이 정상적으로 설정된 경우에만 검색 실행\n  for (const doc of documents) {\n    if (doc.metadata && doc.metadata.user_name) {\n      const currentUserName = doc.metadata.user_name.trim().toLowerCase();\n      if (currentUserName === targetName) {\n        foundContent = doc.content;\n        foundUser = doc; // 사용자 정보 전체를 저장 (필요하다면)\n        break;\n      }\n    }\n  }\n}\n\n// 결과를 반환합니다.\nif (foundContent) {\n  // content만 반환하거나, 찾은 사용자 정보 전체를 반환할 수 있습니다.\n  return { json: { content: foundContent, user_details: foundUser } }; // 예시: content와 함께 사용자 정보 전체 반환\n} else {\n  return { json: { content: \"User not found in the provided documents.\", searched_for: targetName } };\n}"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          600,
+          560
+        ],
+        "id": "d48e7092-1c6c-4e3a-bd71-537be238092e",
+        "name": "Search Info target Patient",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const rawOutput = items[0].json.output;\n\n// 1. 먼저 \\b 문자를 제거합니다.\nlet textWithoutBackspace = rawOutput.replace(/\\b/g, ''); // 모든 \\b를 빈 문자열로 대체\n\n// 2. 그 다음, JSON에 안전하도록 특수 문자를 이스케이프합니다.\nlet escapedOutput = textWithoutBackspace\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/\\n/g, '\\\\n')\n    .replace(/\\r/g, '\\\\r')\n    .replace(/\\t/g, '\\\\t')\n    // .replace(/\\b/g, '\\\\b') // 이 줄은 이제 필요 없거나, 의도적으로 백스페이스를 남기려면 유지합니다.\n                             // 하지만 현재 상황에서는 제거하는 것이 맞아 보입니다.\n    .replace(/\\f/g, '\\\\f');\n\n// 결과를 'cleanedReply'라는 이름으로 다음 노드에 전달합니다.\nreturn { json: { cleanedReply: escapedOutput } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          560
+        ],
+        "id": "4fc60500-aa8f-4c0b-a4ce-9388da8765eb",
+        "name": "Refining Result"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=If userinput is asking patient information, output is 1.\n\nIf userinput is talking about patient's current symptoms, output is 2.\n\nIf user want to check his surgery schedule, output is 3.\n\nHere is userinput. {{ $json.body.message }}\n\nJust return only output.",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          -500,
+          1020
+        ],
+        "id": "12053ccd-76a9-444e-80a3-19f0d3922634",
+        "name": "Agent Usecase Scenario"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "a37246ca-f4ac-4ec3-815a-0ff06ff96ba3"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Checking Patient Info"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "154759e6-1cdd-4586-b040-a9651a735bcd",
+                      "leftValue": "={{ $json.output }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Analyzing Patient Symptoms"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "81419a8e-eb71-4488-abeb-3d65b7e14ee3",
+                      "leftValue": "={{ $json.output }}",
+                      "rightValue": "3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Check Schedule"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -200,
+          1020
+        ],
+        "id": "ec12cd4f-ec30-40a2-ac89-d54f15c4e229",
+        "name": "Switch",
+        "alwaysOutputData": false,
+        "executeOnce": true,
+        "retryOnFail": false
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Webhook1').item.json.body.message }}\n",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "=You need to find the user's name from the input text. The user wants to look for medical history. Here is input text. \n\n{{ $('Webhook1').item.json.body.message }}\n\nJust provide only users_real_fullname.\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          200,
+          560
+        ],
+        "id": "5290ff7c-dbf1-4b29-a1d4-bab912b62851",
+        "name": "Agent - Load Patient",
+        "alwaysOutputData": true,
+        "executeOnce": true,
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=It is conversation between doctor and patient. Patient is talking about symptoms. Through patient record, Could you check the patient's records, confirm their current symptoms, then predict what the problem might be, and explain in detail what you think is wrong?\"\n\nPatient's record: {{ $json.content }}\n\nConversation:  {{ $('Webhook1').item.json.body.message }}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          260,
+          1020
+        ],
+        "id": "1c5dd488-8297-4c4f-bb65-f914dfde03ae",
+        "name": "Agent - Analyze Patient Symptoms"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "Test3",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          220,
+          1540
+        ],
+        "id": "48c8d9e2-20be-492f-9710-00ea1e50f763",
+        "name": "Agent - Doctor Schedule"
+      },
+      {
+        "parameters": {
+          "useCustomSchema": true,
+          "operation": "getAll",
+          "tableId": "latest_conversation",
+          "limit": 1,
+          "filterType": "none"
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          40,
+          1020
+        ],
+        "id": "f686c9c9-d65e-4d83-8e4e-ce1bff14260b",
+        "name": "Pull Latest Conversation",
+        "alwaysOutputData": true,
+        "executeOnce": true,
+        "retryOnFail": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "uYcsUHkYNZ2pmMGS",
+            "name": "Supabase account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "useCustomSchema": true,
+          "tableId": "latest_conversation",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "content",
+                "fieldValue": "={{ $json.cleanedReply }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          1180,
+          700
+        ],
+        "id": "3d0194b9-ebb4-4b96-b90b-43ad9d4315ec",
+        "name": "Push Latest Conversation",
+        "credentials": {
+          "supabaseApi": {
+            "id": "uYcsUHkYNZ2pmMGS",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -500,
+          1160
+        ],
+        "id": "890e6467-d119-4b38-a8b4-7c9a393a3ec9",
+        "name": "gpt 4o mini1",
+        "credentials": {
+          "openAiApi": {
+            "id": "zwLPaQMDNNGngijW",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          260,
+          1180
+        ],
+        "id": "7a556c6a-69ed-40e6-8bb6-bf8aa6eb31e3",
+        "name": "gpt 4o mini2",
+        "credentials": {
+          "openAiApi": {
+            "id": "zwLPaQMDNNGngijW",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          240,
+          1700
+        ],
+        "id": "c0f42e84-da86-4653-ab14-08233fb5686f",
+        "name": "gpt 4o mini3",
+        "credentials": {
+          "openAiApi": {
+            "id": "zwLPaQMDNNGngijW",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"reply\": \"{{ $json.cleanedReply }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.2,
+        "position": [
+          720,
+          1020
+        ],
+        "id": "b5076a6a-c90c-4e06-a478-2936f0e8e869",
+        "name": "Respond to Webhook",
+        "alwaysOutputData": true,
+        "executeOnce": true,
+        "retryOnFail": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const rawOutput = items[0].json.output;\n\n// 1. 먼저 \\b 문자를 제거합니다.\nlet textWithoutBackspace = rawOutput.replace(/\\b/g, ''); // 모든 \\b를 빈 문자열로 대체\n\n// 2. 그 다음, JSON에 안전하도록 특수 문자를 이스케이프합니다.\nlet escapedOutput = textWithoutBackspace\n    .replace(/\\\\/g, '\\\\\\\\')\n    .replace(/\"/g, '\\\\\"')\n    .replace(/\\n/g, '\\\\n')\n    .replace(/\\r/g, '\\\\r')\n    .replace(/\\t/g, '\\\\t')\n    // .replace(/\\b/g, '\\\\b') // 이 줄은 이제 필요 없거나, 의도적으로 백스페이스를 남기려면 유지합니다.\n                             // 하지만 현재 상황에서는 제거하는 것이 맞아 보입니다.\n    .replace(/\\f/g, '\\\\f');\n\n// 결과를 'cleanedReply'라는 이름으로 다음 노드에 전달합니다.\nreturn { json: { cleanedReply: escapedOutput } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          1020
+        ],
+        "id": "a18e81fa-8897-46ad-aeb7-bcf9f1a245fd",
+        "name": "Refining Result4"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          500,
+          720
+        ],
+        "id": "07559fec-22d9-4b72-8158-d940ade6a990",
+        "name": "gpt 4.1 mini",
+        "credentials": {
+          "openAiApi": {
+            "id": "zwLPaQMDNNGngijW",
+            "name": "OpenAi account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook1": {
+        "main": [
+          [
+            {
+              "node": "Agent Usecase Scenario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "documents": {
+        "main": [
+          [
+            {
+              "node": "Search Info target Patient",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent - Summary Patient Info": {
+        "main": [
+          [
+            {
+              "node": "Refining Result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Search Info target Patient": {
+        "main": [
+          [
+            {
+              "node": "AI Agent - Summary Patient Info",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Refining Result": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Push Latest Conversation",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agent Usecase Scenario": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Agent - Load Patient",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Pull Latest Conversation",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Agent - Doctor Schedule",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [],
+          []
+        ]
+      },
+      "Agent - Load Patient": {
+        "main": [
+          [
+            {
+              "node": "documents",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Search Info target Patient",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agent - Analyze Patient Symptoms": {
+        "main": [
+          [
+            {
+              "node": "Refining Result4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pull Latest Conversation": {
+        "main": [
+          [
+            {
+              "node": "Agent - Analyze Patient Symptoms",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Push Latest Conversation": {
+        "main": [
+          []
+        ]
+      },
+      "gpt 4o mini1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Agent Usecase Scenario",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "gpt 4o mini2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Agent - Analyze Patient Symptoms",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "gpt 4o mini3": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Agent - Doctor Schedule",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Refining Result4": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "gpt 4.1 mini": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Agent - Load Patient",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "AI Agent - Summary Patient Info",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "meta": {
+      "templateId": "self-building-ai-agent",
+      "templateCredsSetupCompleted": true,
+      "instanceId": "5a794977f7e98716f632635d44d7ef7f0bf195d3d2ed386a4d25d94cfcf213ca"
+    }
+  }
