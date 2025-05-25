@@ -1,8 +1,10 @@
 # CarePilot - AI Voice-Enabled Doctor Assistant
 
-![CarePilot Logo](public/CarePilotLogo.png)
-
-**CarePilot = More Time. Better Care. Scalable Impact.**
+<div align="center">
+  <img src="public/CarePilotLogo.png" alt="CarePilot Logo" width="200" height="200" style="margin: 20px 0;">
+  
+  **CarePilot = More Time. Better Care. Scalable Impact.**
+</div>
 
 ## 🩺 The Problem
 
@@ -39,6 +41,31 @@ Handles routine tasks — saving time, reducing burnout, and boosting efficiency
 - **Voice Recognition**: Web Speech API
 - **AI Integration**: N8N webhook integration
 - **Deployment**: Vercel-ready
+
+### 🔧 N8N Workflow Integration
+
+Our CarePilot system leverages N8N for seamless AI workflow automation:
+
+<div align="center">
+  <img src="public/n8n.png" alt="N8N Workflow" style="max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <p><em>N8N workflow powering CarePilot's AI backend integration</em></p>
+</div>
+
+## 🏛️ System Architecture
+
+CarePilot's architecture is designed for scalability, reliability, and seamless integration:
+
+<div align="center">
+  <img src="public/Architecture.png" alt="CarePilot System Architecture" style="max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <p><em>Complete system architecture showing data flow and component interactions</em></p>
+</div>
+
+### Key Architecture Components:
+- **Frontend Layer**: Next.js application with voice recognition
+- **API Gateway**: N8N workflow orchestration 
+- **AI Processing**: Large Language Model integration
+- **Data Layer**: Patient information management
+- **Security Layer**: HIPAA-compliant data handling
 
 ## 🏗️ Project Structure
 
