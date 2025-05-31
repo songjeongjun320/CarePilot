@@ -72,7 +72,7 @@ export default function ChatPage() {
   const requestId = useRef<number>(0);
   const recognitionRef = useRef<any>(null);
 
-  const N8N_WEBHOOK_URL = 'https://surveys-kinda-profiles-terminology.trycloudflare.com/webhook-test/41fb0ed9-3ab6-4536-a150-d3f564b1c9eb';
+  const N8N_WEBHOOK_URL = 'https://cdt-parts-chen-litigation.trycloudflare.com/webhook-test/41fb0ed9-3ab6-4536-a150-d3f564b1c9eb';
 
   // 네트워크 상태 모니터링 및 음성 인식 초기화
   useEffect(() => {
